@@ -1,3 +1,6 @@
 1.新增配置 example_config_HBM3.yaml
 2.添加ecc插件 src\dram_controller\impl\plugin\ecc.cpp
 2.修改src\dram_controller\Cmakelist.txt 添加ecc插件路径
+3.添加一键make build编译脚本 make_build.bat
+4.添加一键build编译脚本 build.bat
+5.添加一键执行HBM3仿真 exec_HBM3.bat
