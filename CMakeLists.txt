@@ -61,7 +61,18 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(argparse)
 include_directories(${argparse_SOURCE_DIR}/include)
-message("Done configuring argparse.")
+
+
+message("Configuring Boost...")
+# 引入 Boost 的头文件路径
+find_package(Boost REQUIRED)
+if (Boost_FOUND)
+    message(STATUS "Found Boost: ${Boost_INCLUDE_DIRS}")
+    include_directories(${Boost_INCLUDE_DIRS})
+else()
+    message(FATAL_ERROR "Boost not found. Please install Boost libraries.")
+endif()
+message("Done configuring Boost.")
 ##################################
 
 include_directories(${CMAKE_SOURCE_DIR}/src)

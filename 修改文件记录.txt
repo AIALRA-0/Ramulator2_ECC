@@ -4,13 +4,30 @@
 3.添加一键make build编译脚本 make_build.bat
 4.添加一键build编译脚本 build.bat
 5.添加一键执行HBM3仿真 exec_HBM3.bat
-6.注释request.h，请求的结构再此定义
+6.注释request.h
+	请求的结构在此定义
 7.注释前端frontend.h，基础类
 8.注释controller.h，基础类
 9.注释clocked.h，基础类
-10.注释generic_dram_controller.cpp, 请求在此被发送给插件
+10.注释generic_dram_controller.cpp
+	请求在此被发送给插件
 11.注释scheduler.h，基础类
-12.注释generic_scheduler.cpp，FRFCFS 类在此实现了 DRAM 控制器中的调度算法
-13.注释prac_scheduler.cpp，PRACScheduler 类在此实现了 DRAM 控制器中的调度算法，不只是关注请求的到达时间，还考虑了预请求的条件
-
+12.注释generic_scheduler.cpp
+	FRFCFS 类在此实现了 DRAM 控制器中的调度算法,关注请求的到达时间
+13.注释prac_scheduler.cpp
+	PRACScheduler 类在此实现了 DRAM 控制器中的调度算法，不只是关注请求的到达时间，还考虑了预请求的条件
+14.注释load_storetrace.cpp,
+	LS Trace 是一种记录内存访问操作的跟踪文件格式，其中 Load 操作和 Store 操作分别表示读取和写入操作
+	LS Trace 主要用于记录程序中对内存的读取和写入操作，通常用于模拟器中来重现程序的内存访问模式
+	提供了加载和存储负载（读写）内存地址的功能
+	从一个跟踪文件（trace file）中读取实际的内存访问命令，并将这些命令转化为模拟请求（读请求或写请求）
+	它在每个时钟周期发送相应的内存请求
+15.注释read_writetrace.cpp
+	RW Trace 也是用于记录内存访问操作的跟踪文件格式，类似于 LS Trace
+	不同之处在于，它将 Read 和 Write 操作明确地表示为“读取”和“写入”
+	主要用于记录程序的内存访问模式，但使用了不同的术语来描述操作
+16.添加trace_generator.py
+	用于生成特定要求的trace文件
+	不是，到底trace如何判定的！！！读写是啥关键字！！！
+	
 

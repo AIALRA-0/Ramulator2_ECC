@@ -20,6 +20,7 @@ struct Request {
     enum : int {
       Read = 0, 
       Write,
+      PartialWrite,
     };
   };
 

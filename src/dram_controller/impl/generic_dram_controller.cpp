@@ -422,7 +422,7 @@ class GenericDRAMController final : public IDRAMController, public Implementatio
         // 检查该请求是否已经完成（即已接收到来自 DRAM 的数据）
         if (req.depart <= m_clk) {
           // 请求已完成数据接收（即已经度过了预定的时钟周期）
-          if (req.depart - req.arrive > 1) {
+          if (req.depart - req.arrive > 1)         {
             // 检查命令是否被DRAM处理或者被转发
             // TODO add the stats back
             s_read_latency += req.depart - req.arrive;

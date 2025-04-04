@@ -3,7 +3,7 @@ Frontend:  # 前端处理器（指令发射）配置
   clock_ratio: 8  # 时钟比率（前端 vs 内存系统），表示前端时钟是基准时钟的 8 倍
   num_expected_insts: 500000  # 期望执行的指令数量（可用于仿真终止条件）
   traces:  # 读取的指令跟踪文件（trace），用于仿真指令流
-    - example_prac_attacker.trace  # 指定一个 trace 文件，仿真程序执行的指令流
+    - user_trace.trace  # 指定一个 trace 文件，仿真程序执行的指令流
 
   Translation:  # 地址转换模块（虚拟地址 → 物理地址）
     impl: RandomTranslation  # 采用随机地址转换策略
@@ -33,6 +33,12 @@ MemorySystem:  # 内存系统配置
     plugins:  # 这里可能是插件配置（为空，可能用于扩展 ECC、预取器等）
       - ControllerPlugin:
           impl: ECCPlugin
+          data_block_size: 128  # 数据块大小 bytes
+          edc_size: 4 # edc大小 bytes
+          ecc_size: 1024 # 最大的ecc大小 bytes
+          ecc_size: 32   # 最大能给多少ECC
+          bit_error_rate: 1e-6 # BER
+          max_failure_prob: 1e-14 # 最大失败率
           
 
 
