@@ -9,7 +9,11 @@
 #include "dram_controller/controller.h"
 #include "dram_controller/plugin.h"
 
-#include <boost/crc.hpp>  // 用于 CRC EDC 计算 (Boost)
+// 用于 CRC EDC 计算 (Boost)
+#include <boost/crc.hpp>  
+
+// 用于 RS ECC 计算 
+#include "reedSolomon.h"
 
 namespace Ramulator
 {
@@ -272,7 +276,7 @@ namespace Ramulator
                 std::vector<uint8_t> ecc_codeword = m_ecc_storage[addr];
 
                 // TODO: 这里应该调用真正的ECC解码
-                bool corrected = ECCDecode(data_block, ecc_codeword);
+                bool corrected = decodeECC(data_block, ecc_codeword);
 
                 // 更正成功：如果错误数量 ≤ t（纠错阈值），ECC 成功修复数据。修复后的数据通过并行高速总线返回，并将ECC写回内存
                 if (corrected)
@@ -511,22 +515,70 @@ namespace Ramulator
         return ecc;
     }
 
-    // 简化版RS
+    // RS Encoder
     std::vector<uint8_t> ReedSolomonEncode(const std::vector<uint8_t>& data_block, size_t ecc_size)
     {
-        std::vector<uint8_t> ecc(ecc_size, 0);  // 初始化为指定长度
+        std::vector<uint8_t> codeword(data_block.size() + ecc_size, 0);
     
-        for (size_t i = 0; i < data_block.size(); i++)
+        int m = 7;  // Galois 字长
+        int t = ecc_size / 2;
+    
+        reedSolomon rs(m, t);
+        rs.gen_rand_msg();
+        rs.encode();
+    
+        int n = rs.get_n();
+        int* c_x = rs.get_c_x();
+    
+        for (int i = 0; i < n; ++i)
         {
-            for (size_t j = 0; j < ecc.size(); j++)
-            {
-                ecc[j] ^= data_block[i];
-            }
+            codeword[i] = static_cast<uint8_t>(c_x[i]);
         }
     
-        return ecc;
+        return codeword;
     }
+    
 
+    // RS Decoder
+    bool ReedSolomonDecode(std::vector<uint8_t>& data_block, const std::vector<uint8_t>& ecc_codeword)
+    {
+        int m = 7;
+        int t = ecc_codeword.size() / 2;
+    
+        reedSolomon rs(m, t);
+    
+        int n = rs.get_n();
+        int* rc_x = new int[n];
+        rs.set_rc_x(rc_x);
+    
+        for (int i = 0; i < data_block.size(); ++i)
+        {
+            rc_x[i] = static_cast<int>(data_block[i]);
+        }
+    
+        for (int i = 0; i < ecc_codeword.size(); ++i)
+        {
+            rc_x[data_block.size() + i] = static_cast<int>(ecc_codeword[i]);
+        }
+    
+        rs.decode();
+    
+        if (rs.compare())
+        {
+            int k = rs.get_k();
+            int* dc_x = rs.get_dc_x();
+    
+            data_block.clear();
+            for (int i = 0; i < k; ++i)
+            {
+                data_block.push_back(static_cast<uint8_t>(dc_x[i]));
+            }
+            return true;
+        }
+    
+        return false;
+    }
+    
     // 简化版BCH
     std::vector<uint8_t> BCHEncode(const std::vector<uint8_t>& data_block, size_t ecc_size)
     {
@@ -546,10 +598,26 @@ namespace Ramulator
         return ecc;
     }
 
-    // 简单的ECC解码器接口（伪代码）
-    bool ECCDecode(std::vector<uint8_t>& data_block, const std::vector<uint8_t>& ecc_codeword)
+    
+
+    // 简单的ECC解码器接口
+    bool decodeECC(std::vector<uint8_t>& data_block, const std::vector<uint8_t>& ecc_codeword)
     {
         // TODO: 真正实现解码和错误纠正
+
+        if (ecc_type == "hamming")
+        {
+            
+        }
+        else if (ecc_type == "rs")
+        {
+            return ReedSolomonDecode(data_block, ecc_codeword);
+        }
+        else if (ecc_type == "bch")
+        {
+           
+        }
+
         // 这里为了演示，总是假设纠错成功
         return true;
     }

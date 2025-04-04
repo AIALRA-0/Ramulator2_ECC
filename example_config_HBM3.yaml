@@ -37,6 +37,8 @@ MemorySystem:  # 内存系统配置
           edc_size: 4 # edc大小 bytes
           ecc_size: 1024 # 最大的ecc大小 bytes
           ecc_size: 32   # 最大能给多少ECC
+          ecc_type: 'bch'
+          edc_type: 'crc32'
           bit_error_rate: 1e-6 # BER
           max_failure_prob: 1e-14 # 最大失败率
           

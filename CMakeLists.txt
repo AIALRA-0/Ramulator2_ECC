@@ -73,9 +73,16 @@ else()
     message(FATAL_ERROR "Boost not found. Please install Boost libraries.")
 endif()
 message("Done configuring Boost.")
+
+message("Configuring reedSolomon...")
+add_library(reedSolomon STATIC ext/reed_solomon/reedSolomon.cpp)
+target_include_directories(reedSolomon PUBLIC ${CMAKE_SOURCE_DIR}/ext/reed_solomon)
+message("Done configuring reedSolomon.")
+
 ##################################
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/ext/reed_solomon)  # 添加 reedSolomon.h 的路径
 
 add_library(ramulator SHARED)
 set_target_properties(ramulator PROPERTIES
@@ -85,6 +92,7 @@ target_link_libraries(
   ramulator 
   PUBLIC yaml-cpp
   PUBLIC spdlog
+  PUBLIC reedSolomon  # 链接 reedSolomon 库
 )
 
 add_executable(ramulator-exe)
@@ -93,6 +101,7 @@ target_link_libraries(
   # PRIVATE -Wl,--whole-archive ramulator -Wl,--no-whole-archive 
   PRIVATE ramulator
   PRIVATE argparse
+  PRIVATE reedSolomon  # 链接 reedSolomon 库
 )
 
 set_target_properties(
