@@ -1,48 +1,46 @@
-Frontend:  # 前端处理器（指令发射）配置
-  impl: SimpleO3  # 采用 SimpleO3（Out-of-Order 简单乱序执行）前端
-  clock_ratio: 8  # 时钟比率（前端 vs 内存系统），表示前端时钟是基准时钟的 8 倍
-  num_expected_insts: 500000  # 期望执行的指令数量（可用于仿真终止条件）
-  traces:  # 读取的指令跟踪文件（trace），用于仿真指令流
-    - user_trace.trace  # 指定一个 trace 文件，仿真程序执行的指令流
+Frontend:  # Frontend processor (instruction issue) configuration
+  impl: SimpleO3  # Uses SimpleO3 (simple out-of-order execution) frontend
+  clock_ratio: 8  # Clock ratio (frontend vs memory system), indicating the frontend clock is 8x the base clock
+  num_expected_insts: 500000  # Expected number of instructions to execute (can be used as a simulation termination condition)
+  traces:  # Instruction trace file(s) used to simulate the instruction stream
+    - user_trace.trace  # Specifies a trace file to simulate program instruction execution
 
-  Translation:  # 地址转换模块（虚拟地址 → 物理地址）
-    impl: RandomTranslation  # 采用随机地址转换策略
-    max_addr: 2147483648  # 设定最大地址空间（2GB，表示 2^31 字节的虚拟地址空间）
+  Translation:  # Address translation module (virtual address → physical address)
+    impl: RandomTranslation  # Uses random address translation strategy
+    max_addr: 2147483648  # Sets maximum address space (2GB, i.e., 2^31 bytes of virtual address space)
 
-MemorySystem:  # 内存系统配置
-  impl: GenericDRAM  # 采用通用 DRAM 模型
-  clock_ratio: 3  # 时钟比率（内存系统 vs 处理器），内存时钟是基准时钟的 3 倍
+MemorySystem:  # Memory system configuration
+  impl: GenericDRAM  # Uses generic DRAM model
+  clock_ratio: 3  # Clock ratio (memory system vs processor), memory clock is 3x the base clock
 
-  DRAM:  # DRAM 相关配置
-    impl: HBM3  # 采用 HBM3 内存模型
-    org:  # 组织结构（规格）
-      preset: HBM3_2Gb  # 预设 HBM3_2Gb 规格
-      channel: 1  # 只有 1 个通道
-      pseudochannel: 2  # 每个通道 2 级 pseudochannel
-    timing:  # 时序配置
-      preset: HBM3_2Gbps  # 预设 HBM3_2Gbps 时序参数
+  DRAM:  # DRAM-related configuration
+    impl: HBM3  # Uses HBM3 memory model
+    org:  # Organization (specification)
+      preset: HBM3_2Gb  # Preset for HBM3_2Gb specification
+      channel: 1  # Only one channel
+      pseudochannel: 2  # Two pseudochannels per channel
+    timing:  # Timing configuration
+      preset: HBM3_2Gbps  # Preset for HBM3_2Gbps timing parameters
 
-  Controller:  # DRAM 控制器配置
-    impl: Generic  # 采用通用控制器
-    Scheduler:  # 访问调度器
-      impl: FRFCFS  # 采用 FRFCFS（First Ready First Come First Serve）调度策略
-    RefreshManager:  # 刷新管理器
-      impl: AllBank  # 采用 AllBank 刷新策略（所有 Bank 统一刷新）
-    RowPolicy:  # 行管理策略
+  Controller:  # DRAM controller configuration
+    impl: Generic  # Uses generic controller
+    Scheduler:  # Access scheduler
+      impl: FRFCFS  # Uses FRFCFS (First Ready First Come First Serve) scheduling strategy
+    RefreshManager:  # Refresh manager
+      impl: AllBank  # Uses AllBank refresh strategy (refreshes all banks uniformly)
+    RowPolicy:  # Row management policy
       impl: OpenRowPolicy  
-    plugins:  # 这里可能是插件配置（为空，可能用于扩展 ECC、预取器等）
+    plugins:  # Plugin configuration (empty or used for extensions like ECC, prefetchers, etc.)
       - ControllerPlugin:
           impl: ECCPlugin
-          data_block_size: 128  # 数据块大小 bytes
-          edc_size: 4 # edc大小 bytes
-          ecc_size: 1024 # 最大的ecc大小 bytes
-          ecc_size: 32   # 最大能给多少ECC
+          data_block_size: 128  # Data block size in bytes
+          edc_size: 4  # EDC (error detection code) size in bytes
+          ecc_size: 1024  # Maximum ECC size in bytes
+          ecc_size: 32  # Maximum usable ECC in bytes
           ecc_type: 'bch'
           edc_type: 'crc32'
-          bit_error_rate: 1e-6 # BER
-          max_failure_prob: 1e-14 # 最大失败率
-          
+          bit_error_rate: 1e-6  # Bit error rate (BER)
+          max_failure_prob: 1e-14  # Maximum failure probability
 
-
-  AddrMapper:  # 地址映射策略
-    impl: RoBaRaCoCh  # 采用 RoBaRaCoCh（Row-Bank-Rank-Column-Channel）地址映射方式
+  AddrMapper:  # Address mapping strategy
+    impl: RoBaRaCoCh  # Uses RoBaRaCoCh (Row-Bank-Rank-Column-Channel) address mapping method

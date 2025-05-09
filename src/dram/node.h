@@ -88,46 +88,22 @@ struct DRAMNodeBase {
       }
     };
 
-    /**
-     * @brief 更新内存节点的状态 (State Machine)。
-     * @details
-     * 在接收到一个命令 (command) 时，更新当前节点 (Node) 及其子节点的状态。
-     * 每个节点的状态更新逻辑由 `m_actions` 提供的函数指针来实现。
-     * 状态更新的过程可以递归地应用于层次结构中的所有相关节点。
-     * 
-     * @param command 要执行的命令 (如：ACT, WR, RD 等)。
-     * @param addr_vec 地址向量，描述命令操作的内存层次结构 (如：channel, bank, row, column)。
-     * @param clk 当前时钟周期 (用于记录或判断命令的执行时间)。
-     */
     void update_states(int command, const AddrVec_t& addr_vec, Clk_t clk) {
-      
-      // 获取当前节点的下一级节点的 ID (例如，如果当前节点是 bank，则 child_id 表示 row 的索引)
       int child_id = addr_vec[m_level+1];
-
-      // 检查当前节点的行为表 (m_actions) 中是否存在对应于给定命令的处理函数
       if (m_spec->m_actions[m_level][command]) {
-        // 更新当前层级的状态机
-        m_spec->m_actions[m_level][command](
-            static_cast<NodeType*>(this), // 当前节点 (将指针类型转换为具体的节点类型)
-            command,                      // 要执行的命令
-            child_id,                     // 子节点 ID
-            clk                           // 当前时钟周期
-        ); 
+        // update the state machine at this level
+        m_spec->m_actions[m_level][command](static_cast<NodeType*>(this), command, child_id, clk); 
       }
-
-      // 如果当前节点已经是命令作用的目标层次 (Scope) 或者没有子节点，则停止递归
       if (m_level == m_spec->m_command_scopes[command] || !m_child_nodes.size()) {
-        return; // 停止递归更新状态
+        // stop recursion: updated all levels
+        return; 
       }
-
-      // 如果 child_id 是 -1，说明命令的作用范围是广播到所有的子节点
+      // recursively update child nodes
       if (child_id == -1) {
         for (auto child : m_child_nodes) {
-          // 对每一个子节点递归调用 `update_states` 来更新状态
           child->update_states(command, addr_vec, clk);
         }
       } else {
-        // 否则，只对指定的子节点进行状态更新
         m_child_nodes[child_id]->update_states(command, addr_vec, clk);
       }
     };
@@ -155,41 +131,22 @@ struct DRAMNodeBase {
       }
     };
 
-    /**
-     * @brief 更新节点的时序信息 (Timing)。
-     * @details
-     * 当一个命令 (command) 被发出时，更新当前节点及其相邻节点的时序约束，以确保后续命令执行时符合时序要求。
-     * 特别是在同一个层次结构中的兄弟节点 (Sibling Node) 之间可能存在时序依赖。
-     * 
-     * @param command 发出的命令 (如：ACT, WR, RD)。
-     * @param addr_vec 地址向量，描述命令作用的内存层次结构 (如：channel, bank, row, column)。
-     * @param clk 当前时钟周期 (用于计算时序约束)。
-     */
     void update_timing(int command, const AddrVec_t& addr_vec, Clk_t clk) {
-
       /************************************************
        *         Update Sibling Node Timing
        ***********************************************/
-      // 如果当前节点的 ID 与地址向量中的 ID 不匹配，并且地址向量中的 ID 有效 (不是 -1)
       if (m_node_id != addr_vec[m_level] && addr_vec[m_level] != -1) {
-
-        // 遍历与当前命令相关的所有时序约束 (Timing Constraints)
         for (const auto& t : m_spec->m_timing_cons[m_level][command]) {
-
-          // 检查是否为兄弟节点相关的时序约束 (Sibling Timing)
           if (!t.sibling) {
-            continue;  // 如果不是针对兄弟节点的约束，跳过当前循环
+            // not sibling timing parameter
+            continue; 
           }
 
-          // 计算该命令未来可执行的最早时间 (future)
+          // update earliest schedulable time of every command
           Clk_t future = clk + t.val;
-
-          // 更新此节点上所有命令的可执行时钟 (m_cmd_ready_clk)
-          // 如果已有记录的执行时间较早，则保持原值，否则更新为当前计算值
           m_cmd_ready_clk[t.cmd] = std::max(m_cmd_ready_clk[t.cmd], future); 
         }
-
-        // 如果当前节点是兄弟节点，停止进一步递归，因为时序信息已经更新完成
+        // stop recursion
         return;
       }
 
