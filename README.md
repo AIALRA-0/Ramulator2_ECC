@@ -1,5 +1,5 @@
 # Ramulator2_ECC
-This plugin adds large-size ECC/EDC emulation to [Ramulator2](https://github.com/CMU-SAFARI/ramulator2) to evaluate memory reliability, bandwidth, and latency trade-offs in AI and HPC workloads.
+This plugin adds large-granularity ECC/EDC emulation to [Ramulator2](https://github.com/CMU-SAFARI/ramulator2) to evaluate memory reliability, bandwidth, and latency trade-offs in AI and HPC workloads.
 
 ---
 
