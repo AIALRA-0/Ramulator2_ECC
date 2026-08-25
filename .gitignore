@@ -4,3 +4,10 @@ ext/
 ramulator2
 *.so
 autobuild.sh
+
+# Python validation caches
+__pycache__/
+*.py[cod]
+
+# Browser-render validation artifacts
+.playwright-cli/

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="560" viewBox="0 0 1440 560" role="img" aria-labelledby="title desc">
+  <title id="title">Ramulator2 ECC</title>
+  <desc id="desc">A memory request flows through error detection, error correction, and a DRAM controller</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#07121f"/><stop offset="0.55" stop-color="#11294a"/><stop offset="1" stop-color="#171335"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#22d3ee"/><stop offset="0.5" stop-color="#818cf8"/><stop offset="1" stop-color="#f472b6"/></linearGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1440" height="560" rx="34" fill="url(#bg)"/>
+  <g opacity="0.13" stroke="#9bdcff"><path d="M0 80H1440M0 160H1440M0 240H1440M0 320H1440M0 400H1440M0 480H1440"/><path d="M120 0V560M240 0V560M360 0V560M480 0V560M600 0V560M720 0V560M840 0V560M960 0V560M1080 0V560M1200 0V560M1320 0V560"/></g>
+  <g transform="translate(84 88)">
+    <text x="0" y="36" fill="#e2e8f0" font-family="Segoe UI,Arial,sans-serif" font-size="42" font-weight="750">Ramulator2_ECC</text>
+    <text x="0" y="78" fill="#94a3b8" font-family="Segoe UI,Arial,sans-serif" font-size="21">large-granularity ECC / EDC research prototype</text>
+    <g transform="translate(0 126)">
+      <rect width="390" height="216" rx="22" fill="#0b1728" stroke="#22d3ee" stroke-width="2"/>
+      <text x="28" y="46" fill="#67e8f9" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="700">MEMORY REQUEST</text>
+      <g transform="translate(30 78)" fill="#172554" stroke="#60a5fa" stroke-width="2">
+        <rect width="64" height="52" rx="8"/><rect x="76" width="64" height="52" rx="8"/><rect x="152" width="64" height="52" rx="8"/><rect x="228" width="64" height="52" rx="8"/><rect x="304" width="28" height="52" rx="8"/>
+      </g>
+      <text x="28" y="170" fill="#94a3b8" font-family="Consolas,monospace" font-size="17">address · data · request type</text>
+    </g>
+  </g>
+  <path d="M505 325H590" stroke="url(#accent)" stroke-width="8" stroke-linecap="round" filter="url(#glow)"/><path d="M570 302L596 325L570 348" fill="none" stroke="#818cf8" stroke-width="8" stroke-linecap="round"/>
+  <g transform="translate(625 112)">
+    <rect width="344" height="326" rx="26" fill="#0b1728" stroke="#818cf8" stroke-width="2"/>
+    <text x="30" y="50" fill="#c4b5fd" font-family="Segoe UI,Arial,sans-serif" font-size="22" font-weight="700">CONTROLLER PLUGIN</text>
+    <g transform="translate(30 84)" font-family="Segoe UI,Arial,sans-serif">
+      <rect width="284" height="54" rx="12" fill="#155e75"/><text x="22" y="35" fill="#ecfeff" font-size="18" font-weight="700">EDC · detect</text>
+      <rect y="72" width="284" height="54" rx="12" fill="#3730a3"/><text x="22" y="107" fill="#eef2ff" font-size="18" font-weight="700">ECC · emulate correction</text>
+      <rect y="144" width="284" height="54" rx="12" fill="#831843"/><text x="22" y="179" fill="#fdf2f8" font-size="18" font-weight="700">inject · measure · report</text>
+    </g>
+    <text x="30" y="300" fill="#94a3b8" font-family="Consolas,monospace" font-size="16">ECCPlugin::update()</text>
+  </g>
+  <path d="M1002 325H1082" stroke="url(#accent)" stroke-width="8" stroke-linecap="round" filter="url(#glow)"/><path d="M1062 302L1088 325L1062 348" fill="none" stroke="#f472b6" stroke-width="8" stroke-linecap="round"/>
+  <g transform="translate(1120 147)">
+    <rect width="236" height="246" rx="24" fill="#0b1728" stroke="#f472b6" stroke-width="2"/>
+    <text x="28" y="48" fill="#f9a8d4" font-family="Segoe UI,Arial,sans-serif" font-size="21" font-weight="700">DRAM MODEL</text>
+    <g transform="translate(30 78)" fill="#312e81" stroke="#a5b4fc"><rect width="76" height="50" rx="7"/><rect x="98" width="76" height="50" rx="7"/><rect y="68" width="76" height="50" rx="7"/><rect x="98" y="68" width="76" height="50" rx="7"/></g>
+    <text x="28" y="218" fill="#94a3b8" font-family="Segoe UI,Arial,sans-serif" font-size="16">HBM3 · DDR4 · DDR5</text>
+  </g>
+  <text x="720" y="520" text-anchor="middle" fill="#dbeafe" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" letter-spacing="2">REQUEST → DETECT → CORRECT → SIMULATE</text>
+</svg>
